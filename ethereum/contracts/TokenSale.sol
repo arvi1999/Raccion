@@ -1,6 +1,6 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.20;
 
-import "./Token.sol";
+import './Token.sol';
 
 contract TokenSale {
   address admin;

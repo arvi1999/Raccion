@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import web3 from "../ethereum/web3";
 import {
   Image,
   Button,
@@ -10,31 +11,40 @@ import {
   Progress,
   Header
 } from "semantic-ui-react";
+import token from "../ethereum/Token";
 
 import Layout from "../components/Layout";
 
 class Token extends Component {
+  static async getInitialProps(props) {
+    const account = await new web3.eth.getAccounts();
+    const tokenSupply = await token.methods.totalSupply().call();
+    console.log("List: ", tokenSupply);
+    return {
+      account
+    };
+  }
+
   render() {
+    const yourAccount = this.props.account[0];
     return (
       <Layout>
         <br />
-        <Header
+        <h1
           as="h1"
           style={{
             textAlign: "center",
             marginTop: "34px",
-            marginBottom: "20px",
-            marginLeft: "418px"
+            marginBottom: "20px"
           }}
-          icon
         >
-          <Icon name="chain" />
+          <Icon name="chain" size="huge" />
+          <br />
           <br />
           Raccion Token ICO sale
-        </Header>
+        </h1>
         <hr />
-        <Header
-          as="h3"
+        <h3
           style={{
             textAlign: "center",
             marginTop: "34px",
@@ -42,18 +52,10 @@ class Token extends Component {
             marginLeft: "30px"
           }}
         >
-          <h3
-            style={{
-              textAlign: "center",
-              marginTop: "34px",
-              marginBottom: "20px",
-              marginLeft: "30px"
-            }}
-          >
-            Introducing "Raccion Token" (RAC) || Token price is 0.001 Ether. ||
-            You currently have 0 RAC.
-          </h3>
-        </Header>
+          Introducing "Raccion Token" (RAC) || Token price is 0.001 Ether. ||
+          You currently have 0 RAC.
+        </h3>
+
         <br />
 
         <Form>
@@ -65,7 +67,6 @@ class Token extends Component {
                 icon: "cart",
                 content: "Buy Token"
               }}
-              actionPosition="right"
               min="1"
               type="number"
               pattern="[0-9]"
@@ -73,7 +74,9 @@ class Token extends Component {
             />
           </Form.Field>
           <Form.Field>
-            <Progress percent={10000 / 3000}>3000/1000000 Tokens sold</Progress>
+            <Progress percent={10000 / 3000} indicating>
+              3000/1000000 Tokens sold
+            </Progress>
           </Form.Field>
           <br />
           <br />
@@ -104,7 +107,7 @@ class Token extends Component {
             marginLeft: "30px"
           }}
         >
-          Your Account :{" "}
+          Your Account :{yourAccount}
         </h3>
       </Layout>
     );
