@@ -9,24 +9,46 @@ import {
   Checkbox,
   Icon,
   Progress,
-  Header
+  Header,
+  Modal
 } from "semantic-ui-react";
 import token from "../ethereum/Token";
-
 import Layout from "../components/Layout";
 
 class Token extends Component {
-  static async getInitialProps(props) {
-    const account = await new web3.eth.getAccounts();
+  // static async getInitialProps(props) {
+  //     const tokenSupply = await token.methods.totalSupply().call();
+  //     return (tokenSupply);
+  // }
+
+  state = {
+    account: "",
+    tokenNumber: "",
+    open: false
+  };
+
+  onSubmit = async event => {
+    event.preventDefault();
+    const account = await web3.eth.getAccounts();
     const tokenSupply = await token.methods.totalSupply().call();
+    const tokenBalance = await token.methods.balanceOf(account[0]).call();
     console.log("List: ", tokenSupply);
-    return {
-      account
-    };
-  }
+    console.log("Account balance is: ", tokenBalance);
+    console.log("Account is: ", account);
+  };
+
+  show = dimmer => async () => {
+    const account = await web3.eth.getAccounts();
+    this.setState({ account: account[0] });
+    console.log("account", this.state.account);
+    this.setState({ dimmer, open: true });
+  };
+
+  // show = dimmer => () => this.setState({ dimmer, open: true });
+  close = () => this.setState({ open: false });
 
   render() {
-    const yourAccount = this.props.account[0];
+    const { open, dimmer } = this.state;
     return (
       <Layout>
         <br />
@@ -58,19 +80,23 @@ class Token extends Component {
 
         <br />
 
-        <Form>
+        <Form onSubmit={this.onSubmit}>
           <Form.Field>
             <Input
               action={{
                 color: "blue",
                 labelPosition: "right",
                 icon: "cart",
-                content: "Buy Token"
+                content: "Buy Token",
+                type: "submit"
               }}
               min="1"
               type="number"
               pattern="[0-9]"
               size="massive"
+              onChange={event =>
+                this.setState({ tokenNumber: event.target.value })
+              }
             />
           </Form.Field>
           <Form.Field>
@@ -99,16 +125,26 @@ class Token extends Component {
         <br />
         <br />
         <hr />
-        <h3
-          style={{
-            textAlign: "center",
-            marginTop: "34px",
-            marginBottom: "20px",
-            marginLeft: "30px"
-          }}
-        >
-          Your Account :{yourAccount}
-        </h3>
+        <Form.Field>
+          <Button onClick={this.show("blurring")} color="brown">
+            My Account
+          </Button>
+        </Form.Field>
+        <Modal dimmer={dimmer} open={open} onClose={this.close}>
+          <Modal.Header>Account address</Modal.Header>
+          <Modal.Content>
+            <Modal.Description>
+              <h1 style={{textAlign:"center"}}>{this.state.account}</h1>
+            </Modal.Description>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              color="blue"
+              content="Okay"
+              onClick={this.close}
+            />
+          </Modal.Actions>
+        </Modal>
       </Layout>
     );
   }

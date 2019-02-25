@@ -30,6 +30,10 @@ contract Token {
     return totalSupply;
   }
 
+  function balanceOf(address _owner) public returns(uint256) {
+    return balanceOf[_owner];
+  }
+
   function transfer(address _to, uint256 _value) public returns
   (bool success) {
     require(balanceOf[msg.sender] >= _value);

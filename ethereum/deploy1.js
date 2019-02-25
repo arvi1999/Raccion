@@ -17,7 +17,7 @@ const deploy = async () => {
     JSON.parse(tokenSale.interface)
   )
     .deploy({ data: tokenSale.bytecode,
-              arguments:["0x8DA681e392992846cf89aB2C14f30AceF07AADF8", 1000000000000000]})
+              arguments:["0xB62677E7406E3832b9b12F2c1C01befdcfB2E623", 1000000000000000]})
     .send({ gas: '1500000', from: accounts[0] });
 
   console.log('Contract deployed to', result.options.address);
