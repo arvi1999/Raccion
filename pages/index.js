@@ -13,6 +13,7 @@ import {
   Modal
 } from "semantic-ui-react";
 import token from "../ethereum/Token";
+import tokenSale from "../ethereum/TokenSale";
 import Layout from "../components/Layout";
 
 class Token extends Component {
@@ -23,28 +24,53 @@ class Token extends Component {
 
   state = {
     account: "",
-    tokenNumber: "",
+    tokenNumber: 1,
     open: false
   };
 
   onSubmit = async event => {
     event.preventDefault();
+    // const account = await web3.eth.getAccounts();
+    // const tokenSupply = await token.methods.totalSupply().call();
+    // const tokenBalance = await token.methods.balanceOf(account[0]).call();
+    // console.log("List: ", tokenSupply);
+    // console.log("Account balance is: ", tokenBalance);
+    // console.log("Account is: ", account);
     const account = await web3.eth.getAccounts();
-    const tokenSupply = await token.methods.totalSupply().call();
-    const tokenBalance = await token.methods.balanceOf(account[0]).call();
-    console.log("List: ", tokenSupply);
-    console.log("Account balance is: ", tokenBalance);
-    console.log("Account is: ", account);
+    // const tokenPrice1 = await token.methods.balanceOf("0xf6EF7ba07033831dB8c27786c1c62Df6446dCd19").call();
+    // console.log("tokenPrice: ", tokenPrice1);
+    // const success = await token.methods.transfer(
+    //   "0xDAc40A947834341B3e18A0D8D1B1cb04D26606F9",
+    //   this.state.tokenNumber
+    // ).send({
+    //     from:account[0]
+    //   }
+    // );
+    // await tokenSale.methods.endSale()
+    // .send({from:account[0]});
+    // if(success) {
+    const tokenPrice2 = await token.methods
+      .balanceOf("0xDAc40A947834341B3e18A0D8D1B1cb04D26606F9")
+      .call();
+    console.log("balance of Contract: ", tokenPrice2);
+    // const tokenPrice3 = await token.methods.balanceOf(account[0]).call();
+    // console.log("balance of admin: ", tokenPrice3);
+    // } else {
+    //   alert("error occured!!");
+    // }
   };
 
   show = dimmer => async () => {
     const account = await web3.eth.getAccounts();
-    this.setState({ account: account[0] });
-    console.log("account", this.state.account);
+    if (account == '') {
+      this.setState({ account: "Please unlock Metamask !!" });
+    } else {
+      this.setState({ account: account[0] });
+      console.log("account", this.state.account);
+    }
     this.setState({ dimmer, open: true });
   };
 
-  // show = dimmer => () => this.setState({ dimmer, open: true });
   close = () => this.setState({ open: false });
 
   render() {
@@ -134,15 +160,11 @@ class Token extends Component {
           <Modal.Header>Account address</Modal.Header>
           <Modal.Content>
             <Modal.Description>
-              <h1 style={{textAlign:"center"}}>{this.state.account}</h1>
+              <h1 style={{ textAlign: "center" }}>{this.state.account}</h1>
             </Modal.Description>
           </Modal.Content>
           <Modal.Actions>
-            <Button
-              color="blue"
-              content="Okay"
-              onClick={this.close}
-            />
+            <Button color="blue" content="Okay" onClick={this.close} />
           </Modal.Actions>
         </Modal>
       </Layout>
